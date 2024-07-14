@@ -2,7 +2,7 @@ package com.udu3324.hytools.tools.partyguess;
 
 import java.util.ArrayList;
 
-import com.udu3324.hytools.Config;
+import com.udu3324.hytools.HytoolsConfig;
 import com.udu3324.hytools.hyapi.GuildOfUUID;
 import com.udu3324.hytools.hyapi.RankOfUUID;
 import com.udu3324.hytools.mcapi.IGN;
@@ -13,10 +13,10 @@ public class GuildCheck {
 	static Boolean onlyDoOnce = true;
 	static String firstUUID = "";
 	
-	static ArrayList<String> uuidArray = new ArrayList<String>();
+	static ArrayList<String> uuidArray = new ArrayList<>();
 	
 	private static ArrayList<String> checkIfAnyStringInArrayMatch(ArrayList<String> current, ArrayList<String> checkWith) {
-        ArrayList<String> matched = new ArrayList<String>();
+        ArrayList<String> matched = new ArrayList<>();
 
         for (int i=0; i!=checkWith.size(); i++) {  //for each element in checkWith
             String uuidCheckingWith = checkWith.get(i);
@@ -31,15 +31,12 @@ public class GuildCheck {
                 matched.add(uuidCheckingWith);
             }
         }
-        if (matched.size() == 0) {
-            return matched;
-        }
         return matched;
     }
 	
 	public static String reset() {
 		//disable party guess guild if toggled
-		if (!Config.getPartyGuessGuild()) return null;
+		if (!HytoolsConfig.partyGuessGuild) return null;
     	
 		ArrayList<String> guildInfo = GuildOfUUID.get(firstUUID);
 		
@@ -70,10 +67,12 @@ public class GuildCheck {
 		String returningString = null;
 		
 		try {
-			returningString = RankOfUUID.get(firstUUID) + IGN.get(firstUUID) + "\u00A76 " + I18n.format("partyguess.guildcheck") + " " + playerList + "\u00A76. (" + guildName + ")";
+			String person1 = RankOfUUID.get(firstUUID) + IGN.get(firstUUID) + "§6";
+			String person2 = playerList + "§6. (" + guildName + ")";
+			returningString = I18n.format("partyguess.guildcheck", person1, person2);
 			
 			if (playerList.equals(IGN.get(firstUUID))) returningString = null;
-			if (playerList.equals("")) returningString = null;
+			if (playerList.isEmpty()) returningString = null;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,7 +83,7 @@ public class GuildCheck {
 	}
 	
 	public static void store(String username) {
-		if (!Config.getPartyGuessGuild()) return;
+		if (!HytoolsConfig.partyGuessGuild) return;
     	
 		//convert username to uuid
         String uid = null;
